@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global OTT</title>
+    <link rel="stylesheet" href="/styles.css?v=4.0">
+    <link rel="manifest" href="/manifest.json">
+    <script src="/script.js"></script>
+</head>
+<body>
+<header class="top-bar">
+    <a href="/" class="logo-link">
+        <img src="logo.png" alt="Logo" class="logo">
+    </a>
+    <div class="search-container">
+        <input type="text" placeholder="Search..." class="search-input">
+        <button class="search-button">Search</button>
+    </div>
+
+
+</header>
+
+
+
+
+<main>
+<!-- Genre Buttons Section -->
+<section class="genre-buttons">
+    <% const genres = [...new Set(vodChannels.map(channel => channel.genre))]; %>
+    <% genres.forEach(genre => { %>
+        <button class="genre-button" onclick="filterByGenre('<%= genre %>')"><%= genre %></button>
+    <% }) %>
+</section>
+
+<section class="channel-list">
+    <% vodChannels.forEach((channel, index) => { %>
+        <div class="channel-card" data-genre="<%= channel.genre %>">
+            <div class="thumbnail" id="thumbnail-<%= index %>" onclick="navigateToChannel('<%= channel.postId %>')">
+                <img src="<%= channel.thumbUrl %>?v=1.0" alt="<%= channel.channelName %> Thumbnail">
+            </div>
+            <div class="button-container">
+                <div class="video-title-box">
+                    <div class="video-title"><%= channel.videoTitle %></div>
+                </div>
+                <div class="logo-box">
+                    <img src="<%= channel.logoUrl %>" alt="Logo" class="logo">
+                </div>
+            </div>
+        </div>
+    <% }) %>
+</section>
+
+<footer>
+    <a href="https://reel.zapto.org:8443/globalott.apk" download="globalott.apk" class="download-button">Download Mobile App</a>
+</footer>
+</main>
+
+
+
+
+ <script>
+    
+
+        function navigateToChannel(postId) {
+            // Redirect the user to the specific channel route
+            window.location.href = `/post/${postId}`;
+        }
+
+        function fetchHTMLContent(url, index) {
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    const contentDiv = document.getElementById(`content-${index}`);
+                    contentDiv.innerHTML = data;
+                })
+                .catch(error => console.error('Error fetching HTML content:', error));
+        }
+
+      
+
+
+        // Load content dynamically
+        document.addEventListener('DOMContentLoaded', () => {
+            const channels = <%- JSON.stringify(vodChannels) %>;
+            channels.forEach((channel, index) => {
+                if (channel.content) {
+                    fetchHTMLContent(channel.content, index);
+                }
+            });
+        });
+
+        function sharePost(postId, channelName) {
+            const shareUrl = `${window.location.origin}/post/${postId}`;
+            const shareText = `Check out this channel: ${channelName}`;
+
+            // Check if the Web Share API is supported
+            if (navigator.share) {
+                navigator.share({
+                    title: channelName,
+                    text: shareText,
+                    url: shareUrl,
+                })
+                .then(() => console.log('Post shared successfully'))
+                .catch((err) => console.error('Error sharing post:', err));
+            } else {
+                // Fallback: Copy link to clipboard
+                navigator.clipboard.writeText(shareUrl)
+                    .then(() => alert('Link copied to clipboard!'))
+                    .catch((err) => console.error('Error copying link to clipboard:', err));
+            }
+        }
+   
+
+		// Add this to your script.js
+		function filterByGenre(genre) {
+			const channelCards = document.querySelectorAll('.channel-card');
+			channelCards.forEach(card => {
+				if (card.getAttribute('data-genre') === genre || genre === 'All') {
+					card.style.display = 'block';
+				} else {
+					card.style.display = 'none';
+				}
+			});
+		}
+    
+	</script>
+
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reels</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .reel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: scroll;
+            height: 100vh;
+            scroll-snap-type: y mandatory;
+        }
+        .reel {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            scroll-snap-align: start;
+        }
+        .reel-card {
+            width: 300px; /* Adjust width as needed */
+            height: 540px; /* Adjust height as needed */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+        }
+        .reel-card video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <a href="/" class="logo-link">
+            <img src="logo.png" alt="Logo" class="logo">
+        </a>
+        <h2 class="site-title">Global OTT</h2>
+        <div class="search-container">
+            <input type="text" placeholder="Search..." class="search-input">
+            <button class="search-button">Search</button>
+        </div>
+    </header>
+    <main>
+        <section class="reel-container">
+            <% reels.forEach(reel => { %>
+                <div class="reel">
+                    <div class="reel-card">
+                        <video autoplay loop>
+                            <source src="<%= reel.url %>" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            <% }) %>
+        </section>
+    </main>
+
+  <script>
+ document.addEventListener('DOMContentLoaded', () => {
+    const reelContainer = document.querySelector('.reel-container');
+    const reels = document.querySelectorAll('.reel');
+
+    let currentReelIndex = 0;
+
+    function showReel(index) {
+        reels.forEach((reel, i) => {
+            if (i === index) {
+                reel.style.display = 'flex';
+                const video = reel.querySelector('video');
+                if (video) {
+                    video.play();
+                }
+            } else {
+                reel.style.display = 'none';
+                const video = reel.querySelector('video');
+                if (video) {
+                    video.pause();
+                }
+            }
+        });
+    }
+
+    function handleScroll(event) {
+        const direction = event.deltaY > 0 ? 1 : -1;
+        currentReelIndex = (currentReelIndex + direction + reels.length) % reels.length;
+        showReel(currentReelIndex);
+    }
+
+    reelContainer.addEventListener('wheel', handleScroll);
+
+    // Show the first reel initially
+    showReel(currentReelIndex);
+});
+
+  
+  </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= channel.videoTitle %></title>
+    <meta property="og:title" content="<%= channel.videoTitle %>">
+    <meta property="og:description" content="Check out this channel: <%= channel.channelName %>">
+    <meta property="og:image" content="<%= channel.thumbUrl %>">
+    <meta property="og:url" content="https://blog.darpan-dgtiv.com/post/<%= channel.postId %>">
+    <meta property="og:type" content="article">
+</head>
+<body>
+    <h1><%= channel.videoTitle %></h1>
+    <img src="<%= channel.thumbUrl %>" alt="Thumbnail">
+    <p>Channel Name: <%= channel.channelName %></p>
+    <p>Post ID: <%= channel.postId %></p>
+</body>
+</html>
